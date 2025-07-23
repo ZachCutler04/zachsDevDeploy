@@ -14,6 +14,7 @@ import {
   Circle, Layer, Line, Stage,
 } from 'react-konva';
 import throttle from 'lodash.throttle';
+import { useResizeObserver } from '@mantine/hooks';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { StimulusParams } from '../../../store/types';
 import { Registry } from './trrack-alpha/core/src/registry/reg';
@@ -46,6 +47,8 @@ export default function Canvas({ provenanceState, setAnswer } : StimulusParams<{
 
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const isDrawing = useRef(false);
+
+  const [ref, { width }] = useResizeObserver();
 
   useEffect(() => {
     if (provenanceState) {
@@ -138,7 +141,7 @@ export default function Canvas({ provenanceState, setAnswer } : StimulusParams<{
   };
 
   return (
-    <Box>
+    <Box ref={ref}>
       <Stack>
         <Group>
           <SegmentedControl
@@ -168,8 +171,8 @@ export default function Canvas({ provenanceState, setAnswer } : StimulusParams<{
 
         <Stage
           style={{ cursor: tool === 'eraser' ? `src${IconEraser}` : 'default' }}
-          width={window.innerWidth}
-          height={window.innerHeight}
+          width={width}
+          height={window.innerHeight - 200}
           onMouseDown={handleMouseDown}
           onMousemove={handleMouseMove}
           onMouseup={handleMouseUp}
